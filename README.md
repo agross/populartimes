@@ -1,14 +1,30 @@
+This fork was
+[migrated](https://developers.google.com/maps/documentation/places/web-service/migrate-response#details-response)
+from
+[Places API (Legacy)](https://developers.google.com/maps/documentation/places/web-service/overview-legacy)
+to the new
+[Places API (New)](https://developers.google.com/maps/documentation/places/web-service/op-overview).
 
-# Populartimes  
-The goal of this library is to provide an option to use *Google Maps* popular times data, until it is available via Google's API. 
-For legal concerns please read [Issue #90](../../issues/90). 
+> [!WARNING]
+> All functionality except getting a place by ID with popular times
+> (`get_id(api_key, place_id)`) has been removed since the API changed quite a
+> bit and I am only interested in popular times.
 
-Keep in mind that this API uses the Google Places Web Service, where each API call over a monthly budget is priced. The API call is SKU'd as "Find Current Place" with additional Data SKUs (Basic Data, Contact Data, Atmosphere Data).  As of February 2018, you can make 5000 calls with the alloted monthly budget.  For more information check https://developers.google.com/places/web-service/usage-and-billing and https://cloud.google.com/maps-platform/pricing/sheet/#places.  
+You need a Google Cloud project with the
+[Place Details Pro SKU](https://developers.google.com/maps/billing-and-pricing/sku-details#place-details-pro-sku)
+enabled since the code here queries the `displayName` field which is required
+to further query for popular times.
+
+# Populartimes
+The goal of this library is to provide an option to use *Google Maps* popular times data, until it is available via Google's API.
+For legal concerns please read [Issue #90](../../issues/90).
+
+Keep in mind that this API uses the Google Places Web Service, where each API call over a monthly budget is priced. The API call is SKU'd as "Find Current Place" with additional Data SKUs (Basic Data, Contact Data, Atmosphere Data).  As of February 2018, you can make 5000 calls with the alloted monthly budget.  For more information check https://developers.google.com/places/web-service/usage-and-billing and https://cloud.google.com/maps-platform/pricing/sheet/#places.
 
 As Google Maps is constantly updated this library can  be unstable.
 
 ## How to get started
-+ Get a Google Maps API key https://developers.google.com/places/web-service/get-api-key 
++ Get a Google Maps API key https://developers.google.com/places/web-service/get-api-key
 + `clone` the repository, `cd` into the populartimes directory and run `pip install .`
 + Alternatively install directly from github using `pip install --upgrade git+https://github.com/m-wrzr/populartimes`
 + `import populartimes` and run with `populartimes.get(...)` or `populartimes.get_id(...)`
@@ -167,6 +183,6 @@ Retrieves information for a given area according to place types and bounds. Adds
     + The data is represented as a list of dictionaries, with responses according to the example above
     + The *populartimes* data for each day is an array of length 24, with populartimes data starting from hour 0 to 23, the *wait* data is formatted similarly,
     + *popularity*, *current_popularity*, *rating*, *rating_n*, *time_wait*, *time_spent* and *phone* are optional return parameters and only present if available.
-  
- ## Example how the data can be used for visualization  
+
+ ## Example how the data can be used for visualization
  ![Bars-Gif](/content/bars_visualization.gif "Bars Munich,Berlin,Barcelona, London")
