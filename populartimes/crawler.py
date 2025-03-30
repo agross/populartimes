@@ -19,6 +19,7 @@ USER_AGENT = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) "
                             "AppleWebKit/537.36 (KHTML, like Gecko) "
                             "Chrome/54.0.2840.98 Safari/537.36"}
 
+CACHE = {}
 
 class PopulartimesException(Exception):
     """Exception raised for errors in the input.
@@ -213,6 +214,26 @@ def get_populartimes_from_search(name, address):
 
     return rating, rating_n, popular_times, current_popularity, time_spent
 
+def cached_request(api_key, place_id):
+    if place_id in CACHE:
+        return CACHE[place_id]
+    else:
+        # places api - detail search
+        # https://developers.google.com/maps/documentation/places/web-service/place-details#GetPlaceRequest
+        uri = DETAIL_URL.format(place_id)
+
+        response = requests.get(uri,
+                                headers={
+                                    'X-Goog-Api-Key': api_key,
+                                    'X-Goog-FieldMask': 'id,displayName,shortFormattedAddress,formattedAddress,types,location'
+                                })
+
+        if not response.ok:
+            raise PopulartimesException("Google Places API error", response.text)
+
+        CACHE[place_id] = response.text
+        return response.text
+
 def get_populartimes(api_key, place_id):
     """
     sends request to detail to get a search string
@@ -220,21 +241,8 @@ def get_populartimes(api_key, place_id):
     on the current status of popular times
     :return: json details
     """
-
-    # places api - detail search
-    # https://developers.google.com/maps/documentation/places/web-service/place-details#GetPlaceRequest
-    uri = DETAIL_URL.format(place_id)
-
-    response = requests.get(uri,
-                            headers={
-                                'X-Goog-Api-Key': api_key,
-                                'X-Goog-FieldMask': 'id,displayName,shortFormattedAddress,formattedAddress,types,location'
-                            })
-
-    if not response.ok:
-        raise PopulartimesException("Google Places API error", response.text)
-
-    details = json.loads(response.text)
+    response = cached_request(api_key, place_id)
+    details = json.loads(response)
 
     return get_populartimes_by_detail(details)
 

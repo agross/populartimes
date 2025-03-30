@@ -34,4 +34,4 @@ def test_bogus_place():
 
 def test_api_key_wrong():
     with pytest.raises(PopulartimesException):
-        get_populartimes('not an API key', PLACE_ID)
+        get_populartimes('not an API key', '')
